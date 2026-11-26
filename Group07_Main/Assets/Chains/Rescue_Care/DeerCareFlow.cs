@@ -1,4 +1,5 @@
 using System.Collections;
+using DG.Tweening;
 using Group07.ActionCore;
 using Group07.Story;
 using UnityEngine;
@@ -24,6 +25,17 @@ namespace Group07.Chains
         [SerializeField] private AudioClip missClip;
         [SerializeField] private GameObject missHint;
 
+        [Header("受击与阶段表现")]
+        [SerializeField] private Transform deerRoot;
+        [SerializeField] private Transform deerHead;
+        [SerializeField] private GameObject hitEffect;
+        [SerializeField] private float hitEffectScale = 0.6f;
+        [SerializeField] private Light stageLight;
+        [SerializeField] private Color coldLightColor = new Color(0.55f, 0.70f, 1f);
+        [SerializeField] private Color warmLightColor = new Color(1f, 0.83f, 0.60f);
+        [SerializeField] private float coldIntensity = 0.6f;
+        [SerializeField] private float warmIntensity = 1.4f;
+
         private StoryStateController state;
         private int hitCount;
         private Coroutine missRoutine;
@@ -47,6 +59,7 @@ namespace Group07.Chains
             hitCount = 0;
             HideMissHint();
             ResetBedding();
+            ResetVisuals();
 
             if (state != null)
             {
@@ -68,20 +81,28 @@ namespace Group07.Chains
         {
             hitCount++;
 
-            if (state != null)
+            int newStage = -1;
+            if (hitCount == 3)
             {
-                if (hitCount == 3)
+                newStage = 1;
+            }
+            else if (hitCount == 6)
+            {
+                newStage = 2;
+            }
+
+            if (newStage >= 0)
+            {
+                if (state != null)
                 {
-                    state.SetStage(1);
+                    state.SetStage(newStage);
                 }
-                else if (hitCount == 6)
-                {
-                    state.SetStage(2);
-                }
+
+                ApplyStageVisual(newStage, false);
             }
 
             CleanBedding(hit.side, hit.index);
-            PlayClip(hitClip);
+            PlayHitReaction(hit);
         }
 
         public override void OnTargetMiss(int index)
@@ -99,17 +120,108 @@ namespace Group07.Chains
             {
                 state.SetStage(3);
             }
+
+            ApplyStageVisual(3, false);
+
+            if (deerHead != null)
+            {
+                deerHead.DOKill();
+                deerHead.DOLocalRotate(new Vector3(-10f, 0f, 0f), 0.6f).SetEase(Ease.OutBack);
+            }
         }
 
         public override void OnRoundAbort()
         {
             HideMissHint();
             ResetBedding();
+            ResetVisuals();
 
             if (state != null)
             {
                 state.ResetToStart();
             }
+        }
+
+        private void PlayHitReaction(StoryHitInfo hit)
+        {
+            SpawnHitEffect(hit);
+
+            if (deerRoot != null)
+            {
+                deerRoot.DOKill();
+                deerRoot.localScale = Vector3.one;
+                deerRoot.DOPunchScale(Vector3.one * 0.06f, 0.25f, 3, 0.5f);
+            }
+
+            if (deerHead != null)
+            {
+                deerHead.DOKill();
+                deerHead.DOPunchRotation(new Vector3(-8f, 0f, 0f), 0.3f, 2, 0.5f);
+            }
+
+            PlayClip(hitClip);
+        }
+
+        private void SpawnHitEffect(StoryHitInfo hit)
+        {
+            if (hitEffect == null || beddingRenderers == null || beddingRenderers.Length == 0)
+            {
+                return;
+            }
+
+            int offset = hit.side == StorySide.Left ? 0 : 5;
+            int i = Mathf.Clamp(offset + hit.index, 0, beddingRenderers.Length - 1);
+            Renderer bedding = beddingRenderers[i];
+            if (bedding == null)
+            {
+                return;
+            }
+
+            Vector3 pos = bedding.transform.position + Vector3.up * 0.2f;
+            GameObject fx = Instantiate(hitEffect, pos, Quaternion.identity);
+            fx.transform.localScale = Vector3.one * hitEffectScale;
+            Destroy(fx, 2f);
+        }
+
+        private void ApplyStageVisual(int stage, bool instant)
+        {
+            if (stageLight == null)
+            {
+                return;
+            }
+
+            float t = Mathf.Clamp01(stage / 3f);
+            Color color = Color.Lerp(coldLightColor, warmLightColor, t);
+            float intensity = Mathf.Lerp(coldIntensity, warmIntensity, t);
+
+            stageLight.DOKill();
+            if (instant)
+            {
+                stageLight.color = color;
+                stageLight.intensity = intensity;
+            }
+            else
+            {
+                stageLight.DOColor(color, 0.4f);
+                stageLight.DOIntensity(intensity, 0.4f);
+            }
+        }
+
+        private void ResetVisuals()
+        {
+            if (deerRoot != null)
+            {
+                deerRoot.DOKill();
+                deerRoot.localScale = Vector3.one;
+            }
+
+            if (deerHead != null)
+            {
+                deerHead.DOKill();
+                deerHead.localRotation = Quaternion.identity;
+            }
+
+            ApplyStageVisual(0, true);
         }
 
         private void CleanBedding(StorySide side, int index)
