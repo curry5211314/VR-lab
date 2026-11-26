@@ -15,5 +15,14 @@ namespace Group07.Story
         public Transform chainMount;
         public Transform uiRoot;
         public AudioSource audioRoot;
+        public StoryStateController stateController;
+
+        private void Awake()
+        {
+            if (stateController == null)
+            {
+                stateController = GetComponent<StoryStateController>();
+            }
+        }
     }
 }
