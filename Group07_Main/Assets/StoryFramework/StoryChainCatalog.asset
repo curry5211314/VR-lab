@@ -19,7 +19,7 @@ MonoBehaviour:
     actionLabel: "\u4F53\u4FA7\u5185\u65CB"
     chainPrefab: {fileID: 1795331384901351144, guid: 1f03553013f13384885aed6ef2b9dd93,
       type: 3}
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 8aba106f136132d4fb62c5ec1999f0d7, type: 3}
     description: "\u91CE\u751F\u52A8\u7269\u6551\u52A9\u7AD9\uFF1A\u4E3A\u5C0F\u52A8\u7269\u505A\u4F53\u4FA7\u5185\u65CB\u62A4\u7406"
   - chainId: Rescue_Feed
     displayName: "\u6295\u5582"

@@ -18,6 +18,7 @@ namespace Group07.Story.UI
         [SerializeField] private StoryGuidePanel guidePanel;
         [SerializeField] private Button[] chainButtons;
         [SerializeField] private Text[] chainLabels;
+        [SerializeField] private Image[] chainIcons;
 
         private readonly List<StoryChainEntry> entries = new List<StoryChainEntry>();
 
@@ -99,6 +100,14 @@ namespace Group07.Story.UI
                 if (hasEntry && chainLabels != null && i < chainLabels.Length && chainLabels[i] != null)
                 {
                     chainLabels[i].text = entries[i].displayName + "\n<size=24>" + entries[i].actionLabel + "</size>";
+                }
+
+                // 图标位可选：未配置时保持原有纯文字表现
+                if (hasEntry && chainIcons != null && i < chainIcons.Length && chainIcons[i] != null)
+                {
+                    Sprite icon = entries[i].icon;
+                    chainIcons[i].sprite = icon;
+                    chainIcons[i].gameObject.SetActive(icon != null);
                 }
             }
         }
