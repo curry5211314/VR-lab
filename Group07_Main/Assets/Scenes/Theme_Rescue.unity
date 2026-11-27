@@ -16921,7 +16921,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: f4900da871211be4eaa3ebf9886de502, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -28564,6 +28564,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 495274882032360526, guid: 0c9bb18401a036841ace913f2c7fede7,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 495274882032360526, guid: 0c9bb18401a036841ace913f2c7fede7,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 495274882032360526, guid: 0c9bb18401a036841ace913f2c7fede7,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1050
+      objectReference: {fileID: 0}
+    - target: {fileID: 495274882032360526, guid: 0c9bb18401a036841ace913f2c7fede7,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 520
+      objectReference: {fileID: 0}
     - target: {fileID: 1885137709961161320, guid: 0c9bb18401a036841ace913f2c7fede7,
         type: 3}
       propertyPath: roundController
@@ -28735,6 +28755,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: StoryHud
       objectReference: {fileID: 0}
+    - target: {fileID: 5518139087245598380, guid: 0c9bb18401a036841ace913f2c7fede7,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5518139087245598380, guid: 0c9bb18401a036841ace913f2c7fede7,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5518139087245598380, guid: 0c9bb18401a036841ace913f2c7fede7,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1050
+      objectReference: {fileID: 0}
+    - target: {fileID: 5518139087245598380, guid: 0c9bb18401a036841ace913f2c7fede7,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 8388821805796261568, guid: 0c9bb18401a036841ace913f2c7fede7,
         type: 3}
       propertyPath: roundController
@@ -28873,7 +28913,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 8aba106f136132d4fb62c5ec1999f0d7, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1

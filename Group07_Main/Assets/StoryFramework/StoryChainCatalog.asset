@@ -27,7 +27,7 @@ MonoBehaviour:
     actionLabel: "\u524D\u5C48"
     chainPrefab: {fileID: 2996605126217287073, guid: be85509257501f541bfa1223150ee723,
       type: 3}
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: f4900da871211be4eaa3ebf9886de502, type: 3}
     description: "\u91CE\u751F\u52A8\u7269\u6551\u52A9\u7AD9\uFF1A\u524D\u5C48\u6295\u5582\u5C0F\u52A8\u7269"
   - chainId: Market_Restock
     displayName: "\u8865\u8D27"
