@@ -13,7 +13,11 @@ public class CsvFileWriter : MonoBehaviour
 
     string folderPath;
     string filePath;
-    string configPath;
+
+    // 表头新增命中、失误、用时三列，结算数据可直接对账
+    static readonly string[] HeaderColumns = { "User", "Hand", "Time", "Action", "Difficulty", "Star", "Angle_X", "Angle_Y", "Angle_Z", "HitCount", "MissCount", "Duration" };
+    static readonly string HeaderLine = string.Join(",", HeaderColumns);
+
     private void Awake()
     {
         _instance= this;
@@ -24,19 +28,52 @@ public class CsvFileWriter : MonoBehaviour
         folderPath = Path.Combine(Application.persistentDataPath, "APPData");
         Directory.CreateDirectory(folderPath);
         filePath = Path.Combine(folderPath, "FitData.csv");
-        //configPath = Path.Combine(folderPath, "Config.cfg");
-       
 
-        // 仅在文件不存在时创建并写入表头
         if (!File.Exists(filePath))
         {
             CreateCsvFileWithHeader();
+        }
+        else if (!HasCurrentHeader())
+        {
+            // 旧表头缺少命中/失误/用时列，先改名备份再建新表，避免新旧行错位
+            MigrateOldFile();
         }
         else
         {
             Debug.Log($"CSV文件已存在，无需重复创建: {filePath}");
         }
-        // 确保文件夹存在
+    }
+
+    private bool HasCurrentHeader()
+    {
+        try
+        {
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                string first = reader.ReadLine();
+                return first != null && first.Trim() == HeaderLine;
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"读取CSV表头失败: {e.Message}");
+            return false;
+        }
+    }
+
+    private void MigrateOldFile()
+    {
+        string legacyPath = Path.Combine(folderPath, "FitData_legacy_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".csv");
+        try
+        {
+            File.Move(filePath, legacyPath);
+            Debug.Log($"旧版 FitData.csv 已备份为: {legacyPath}");
+            CreateCsvFileWithHeader();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"备份旧版 FitData.csv 失败: {e.Message}");
+        }
     }
 
 
@@ -50,20 +87,9 @@ public class CsvFileWriter : MonoBehaviour
             // 确保文件夹存在
             Directory.CreateDirectory(folderPath);
 
-            // 定义CSV表头
-            List<string[]> fitDataHeader = new List<string[]>()
-            {
-                new string[] { "User",  "Hand" , "Time", "Action", "Difficulty", "Star", "Angle_X", "Angle_Y" , "Angle_Z" }  //设备id,手,时间，动作名称，星级，角度
-            };
-
-            // 写入表头数据
             using (StreamWriter writer = new StreamWriter(filePath))
             {
-                foreach (string[] data in fitDataHeader)
-                {
-                    string line = string.Join(",", data);
-                    writer.WriteLine(line);
-                }
+                writer.WriteLine(HeaderLine);
             }
 
             Debug.Log($"CSV文件创建成功: {filePath}");
@@ -75,7 +101,7 @@ public class CsvFileWriter : MonoBehaviour
     }
 
 
-    public void SetDataToCsvFile(string action,int diff, int star,Vector3 angle,string hand)
+    public void SetDataToCsvFile(string action,int diff, int star,Vector3 angle,string hand,int hitCount,int missCount,float durationSeconds)
     {
         star = star>=0?star:0;
         string time  = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -84,7 +110,7 @@ public class CsvFileWriter : MonoBehaviour
         string angleY = angle.y.ToString("F1");
         string angleZ = angle.z.ToString("F1");
 
-        diff -= 1;
+        // 服务端难度统一按 0 基（0 简单 / 1 中等 / 2 困难），不再做 -1 换算
         // 转换为枚举
         Difficulty difficulty = (Difficulty)diff;
         string diffData = "";
@@ -107,7 +133,7 @@ public class CsvFileWriter : MonoBehaviour
         
         List<string[]> fitData = new List<string[]>()
         {
-            new string[] {androidID, hand,time, action, diffData,star.ToString(),angleX,angleY,angleZ}   //设备id,时间，动作名称，星级，角度
+            new string[] {androidID, hand,time, action, diffData,star.ToString(),angleX,angleY,angleZ,hitCount.ToString(),missCount.ToString(),durationSeconds.ToString("F1")}   //设备id,手,时间，动作名称，星级，角度，命中，失误，用时
         };
 
         // 写入 CSV

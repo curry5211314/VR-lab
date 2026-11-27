@@ -193,7 +193,7 @@ public class DoubleSpace2Csv : MonoBehaviour
 
     public string GetDataDiff(int diffInde)
     {
-        diffInde -= 1;
+        // 难度统一按 0 基（0 简单 / 1 中等 / 2 困难），不再做 -1 换算
         // 转换为枚举
         Difficulty difficulty = (Difficulty)diffInde;
         switch (difficulty)

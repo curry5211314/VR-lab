@@ -149,6 +149,8 @@ namespace Group07.Story.UI
 
         private void HandleRoundCompleted(StoryRoundResult result)
         {
+            WriteResultCsv(result);
+
             if (progressPanel != null)
             {
                 progressPanel.SetVisible(false);
@@ -158,6 +160,26 @@ namespace Group07.Story.UI
             {
                 settlementPanel.Show(result);
             }
+        }
+
+        // 结算数据写入 FitData.csv，命中/失误/用时/星级与结算面板保持一致
+        private void WriteResultCsv(StoryRoundResult result)
+        {
+            if (CsvFileWriter._instance == null || MainControl._instance == null)
+            {
+                return;
+            }
+
+            MainControl main = MainControl._instance;
+            CsvFileWriter._instance.SetDataToCsvFile(
+                main.actName,
+                main.difficulty,
+                result.starRating,
+                main.angL,
+                main.handIndex,
+                result.hitCount,
+                result.missCount,
+                result.durationSeconds);
         }
     }
 }

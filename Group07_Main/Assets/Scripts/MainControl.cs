@@ -168,6 +168,14 @@ public class MainControl : MonoBehaviour
         isGaming = true;
         action = act;
         difficulty = diff;
+        // 每次开始新一轮都清零累计数据，避免上一轮的分数/目标索引写进本轮 CSV
+        score = 0;
+        triggerIndex_L = 0;
+        triggerIndex_R = 0;
+        angL = Vector3.zero;
+        angR = Vector3.zero;
+        isStar5 = false;
+        if (tt_score != null) tt_score.text = "0";
         creat_endIndex_01= endindex;
         if (tt_title != null) tt_title.text = GetActionName();
         if (clp && !string.IsNullOrEmpty(data))
