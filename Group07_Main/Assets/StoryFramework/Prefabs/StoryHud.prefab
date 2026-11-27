@@ -305,6 +305,7 @@ MonoBehaviour:
   chainLabels:
   - {fileID: 5718579957931354147}
   - {fileID: 7842912392089581336}
+  chainIcons: []
 --- !u!1 &399568044278543603
 GameObject:
   m_ObjectHideFlags: 0
