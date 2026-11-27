@@ -724,6 +724,7 @@ MonoBehaviour:
   nextButton: {fileID: 1640318643229921656}
   startButton: {fileID: 2219040558564677076}
   steps: []
+  voiceSource: {fileID: 0}
 --- !u!1 &2358071432720597758
 GameObject:
   m_ObjectHideFlags: 0
@@ -1293,8 +1294,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 35}
-  m_SizeDelta: {x: 860, y: 80}
+  m_AnchoredPosition: {x: 0, y: 28}
+  m_SizeDelta: {x: 860, y: 72}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2722110496017971276
 CanvasRenderer:
@@ -1454,8 +1455,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -30}
-  m_SizeDelta: {x: 900, y: 180}
+  m_AnchoredPosition: {x: 0, y: -70}
+  m_SizeDelta: {x: 900, y: 140}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &369908352576479024
 CanvasRenderer:
@@ -2856,8 +2857,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -50}
-  m_SizeDelta: {x: 860, y: 50}
+  m_AnchoredPosition: {x: 0, y: -42}
+  m_SizeDelta: {x: 860, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9196434036374325073
 CanvasRenderer:
