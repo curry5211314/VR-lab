@@ -125,11 +125,7 @@ namespace Group07.Story.UI
 
             if (guidePanel != null)
             {
-                guidePanel.SetSteps(new List<StoryGuidePanel.GuideStep>
-                {
-                    new StoryGuidePanel.GuideStep { title = entry.displayName, body = entry.description },
-                    new StoryGuidePanel.GuideStep { title = "操作提示", body = BuildHint(entry.actionLabel) }
-                });
+                guidePanel.SetSteps(BuildGuideSteps(flow, entry));
             }
 
             Hide();
@@ -138,6 +134,24 @@ namespace Group07.Story.UI
             {
                 hudBinder.ShowGuide();
             }
+        }
+
+        private static List<StoryGuidePanel.GuideStep> BuildGuideSteps(StoryFlowBase flow, StoryChainEntry entry)
+        {
+            if (flow is IStoryGuideProvider provider)
+            {
+                List<StoryGuidePanel.GuideStep> provided = provider.BuildGuideSteps();
+                if (provided != null && provided.Count > 0)
+                {
+                    return provided;
+                }
+            }
+
+            return new List<StoryGuidePanel.GuideStep>
+            {
+                new StoryGuidePanel.GuideStep { title = entry.displayName, body = entry.description },
+                new StoryGuidePanel.GuideStep { title = "操作提示", body = BuildHint(entry.actionLabel) }
+            };
         }
 
         private static string BuildHint(string actionLabel)

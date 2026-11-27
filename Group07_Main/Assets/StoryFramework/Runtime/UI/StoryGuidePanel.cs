@@ -6,6 +6,14 @@ using UnityEngine.UI;
 namespace Group07.Story.UI
 {
     /// <summary>
+    /// 链路可选实现：由链路提供自己的分步引导文案，未实现时链路菜单使用默认两页。
+    /// </summary>
+    public interface IStoryGuideProvider
+    {
+        List<StoryGuidePanel.GuideStep> BuildGuideSteps();
+    }
+
+    /// <summary>
     /// 动作开始前的分步引导面板，由主题场景复用，链路只提供文案。
     /// </summary>
     public class StoryGuidePanel : MonoBehaviour

@@ -1,7 +1,9 @@
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 using Group07.ActionCore;
 using Group07.Story;
+using Group07.Story.UI;
 using UnityEngine;
 
 namespace Group07.Chains
@@ -10,7 +12,7 @@ namespace Group07.Chains
     /// 野生动物救助站 - 内旋护理（体侧内旋链路，左右双侧）。
     /// 命中推进 S0→S1→S2，完成进入 S3；失误只提示，不扣进度。
     /// </summary>
-    public class DeerCareFlow : StoryFlowBase
+    public class DeerCareFlow : StoryFlowBase, IStoryGuideProvider
     {
         [SerializeField] private TiCeNActionAdapter actionAdapter;
 
@@ -36,6 +38,14 @@ namespace Group07.Chains
         [SerializeField] private float coldIntensity = 0.6f;
         [SerializeField] private float warmIntensity = 1.4f;
 
+        [Header("引导示范（可选）")]
+        [SerializeField] private GameObject guideDemo;
+        [SerializeField] private Transform guideForearmLeft;
+        [SerializeField] private Transform guideForearmRight;
+        [SerializeField] private float guideSweepOut = -20f;
+        [SerializeField] private float guideSweepIn = 35f;
+        [SerializeField] private float guideSweepDuration = 1.2f;
+
         private StoryStateController state;
         private int hitCount;
         private Coroutine missRoutine;
@@ -43,6 +53,33 @@ namespace Group07.Chains
         public override string ChainId => "Rescue_Care";
         public override string DisplayName => "内旋护理";
         public override int TargetCount => 10; // 左右各 5 个内旋目标
+
+        public List<StoryGuidePanel.GuideStep> BuildGuideSteps()
+        {
+            return new List<StoryGuidePanel.GuideStep>
+            {
+                new StoryGuidePanel.GuideStep
+                {
+                    title = "情境：脏污的护理区",
+                    body = "受伤的小鹿蜷缩在脏污的垫料上。请清理它左右两侧的护理区，让它慢慢恢复。"
+                },
+                new StoryGuidePanel.GuideStep
+                {
+                    title = "动作：体侧内旋",
+                    body = "双臂贴身、屈肘约 90°，前臂向内旋转，依次触碰身体两侧亮起的护理目标。可先跟着场内的蓝色示范手臂做一次。"
+                },
+                new StoryGuidePanel.GuideStep
+                {
+                    title = "失误：只提示不扣进度",
+                    body = "保持上臂贴身；超时没碰到目标只会提示，不扣进度。左右手交替完成全部 10 个目标。"
+                }
+            };
+        }
+
+        private void Awake()
+        {
+            ShowGuideDemo();
+        }
 
         public override void BindContext(StoryContext context)
         {
@@ -57,6 +94,7 @@ namespace Group07.Chains
         public override void OnRoundStart(StorySide side, int difficulty)
         {
             hitCount = 0;
+            HideGuideDemo();
             HideMissHint();
             ResetBedding();
             ResetVisuals();
@@ -297,6 +335,50 @@ namespace Group07.Chains
             if (missHint != null)
             {
                 missHint.SetActive(false);
+            }
+        }
+
+        /// <summary>引导阶段的简化示范：两只手臂前臂来回内旋，开始后隐藏。</summary>
+        private void ShowGuideDemo()
+        {
+            if (guideDemo != null)
+            {
+                guideDemo.SetActive(true);
+            }
+
+            StartGuideSweep(guideForearmLeft, 1f);
+            StartGuideSweep(guideForearmRight, -1f);
+        }
+
+        private void StartGuideSweep(Transform pivot, float direction)
+        {
+            if (pivot == null)
+            {
+                return;
+            }
+
+            pivot.DOKill();
+            pivot.localRotation = Quaternion.Euler(0f, guideSweepOut * direction, 0f);
+            pivot.DOLocalRotate(new Vector3(0f, guideSweepIn * direction, 0f), guideSweepDuration)
+                .SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo);
+        }
+
+        private void HideGuideDemo()
+        {
+            if (guideDemo != null)
+            {
+                guideDemo.SetActive(false);
+            }
+
+            if (guideForearmLeft != null)
+            {
+                guideForearmLeft.DOKill();
+            }
+
+            if (guideForearmRight != null)
+            {
+                guideForearmRight.DOKill();
             }
         }
     }
