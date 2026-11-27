@@ -52,6 +52,11 @@ namespace Group07.Chains
         [SerializeField] private float guideSweepIn = 35f;
         [SerializeField] private float guideSweepDuration = 1.2f;
 
+        [Header("引导语音（可选，未配置时纯字幕）")]
+        [SerializeField] private AudioClip guideVoiceStep0;
+        [SerializeField] private AudioClip guideVoiceStep1;
+        [SerializeField] private AudioClip guideVoiceStep2;
+
         private StoryStateController state;
         private int hitCount;
         private Coroutine missRoutine;
@@ -67,17 +72,20 @@ namespace Group07.Chains
                 new StoryGuidePanel.GuideStep
                 {
                     title = "情境：脏污的护理区",
-                    body = "受伤的小鹿蜷缩在脏污的垫料上。请清理它左右两侧的护理区，让它慢慢恢复。"
+                    body = "受伤的小鹿蜷缩在脏污的垫料上。请清理它左右两侧的护理区，让它慢慢恢复。",
+                    voice = guideVoiceStep0
                 },
                 new StoryGuidePanel.GuideStep
                 {
                     title = "动作：体侧内旋",
-                    body = "双臂贴身、屈肘约 90°，前臂向内旋转，依次触碰身体两侧亮起的护理目标。可先跟着场内的蓝色示范手臂做一次。"
+                    body = "双臂贴身、屈肘约 90°，前臂向内旋转，依次触碰身体两侧亮起的护理目标。可先跟着场内的蓝色示范手臂做一次。",
+                    voice = guideVoiceStep1
                 },
                 new StoryGuidePanel.GuideStep
                 {
                     title = "失误：只提示不扣进度",
-                    body = "保持上臂贴身；超时没碰到目标只会提示，不扣进度。左右手交替完成全部 10 个目标。"
+                    body = "保持上臂贴身；超时没碰到目标只会提示，不扣进度。左右手交替完成全部 10 个目标。",
+                    voice = guideVoiceStep2
                 }
             };
         }
