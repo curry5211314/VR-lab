@@ -25,6 +25,9 @@ namespace Group07.Story.UI
 
             [TextArea(2, 5)]
             public string body;
+
+            // 可选：该步骤的语音，未配置时保持纯文字引导
+            public AudioClip voice;
         }
 
         [SerializeField] private GameObject root;
@@ -35,6 +38,7 @@ namespace Group07.Story.UI
         [SerializeField] private Button nextButton;
         [SerializeField] private Button startButton;
         [SerializeField] private List<GuideStep> steps = new List<GuideStep>();
+        [SerializeField] private AudioSource voiceSource;
 
         private int stepIndex;
 
@@ -60,6 +64,19 @@ namespace Group07.Story.UI
                 startButton.onClick.AddListener(OnStartClicked);
             }
 
+            if (voiceSource == null)
+            {
+                voiceSource = GetComponent<AudioSource>();
+            }
+
+            if (voiceSource == null)
+            {
+                voiceSource = gameObject.AddComponent<AudioSource>();
+            }
+
+            voiceSource.playOnAwake = false;
+            voiceSource.spatialBlend = 0f;
+
             Refresh();
         }
 
@@ -76,6 +93,11 @@ namespace Group07.Story.UI
 
         public void Hide()
         {
+            if (voiceSource != null)
+            {
+                voiceSource.Stop();
+            }
+
             if (root != null)
             {
                 root.SetActive(false);
@@ -150,6 +172,26 @@ namespace Group07.Story.UI
             if (startButton != null)
             {
                 startButton.interactable = !hasSteps || safeIndex >= steps.Count - 1;
+            }
+
+            bool panelVisible = root == null || root.activeInHierarchy;
+            PlayStepVoice(panelVisible && hasSteps ? steps[safeIndex].voice : null);
+        }
+
+        /// <summary>切换步骤时播放该步骤语音；未配置语音时保持静音。</summary>
+        private void PlayStepVoice(AudioClip clip)
+        {
+            if (voiceSource == null)
+            {
+                return;
+            }
+
+            voiceSource.Stop();
+
+            if (clip != null)
+            {
+                voiceSource.clip = clip;
+                voiceSource.Play();
             }
         }
     }
