@@ -25,7 +25,13 @@ namespace Group07.Chains
         [SerializeField] private AudioSource feedbackAudio;
         [SerializeField] private AudioClip hitClip;
         [SerializeField] private AudioClip missClip;
+        [SerializeField] private AudioClip completeClip;
         [SerializeField] private GameObject missHint;
+
+        [Header("阶段表现（可选）")]
+        [SerializeField] private GameObject stageEffect;
+        [SerializeField] private Transform stageEffectAnchor;
+        [SerializeField] private GameObject dustEffect;
 
         [Header("受击与阶段表现")]
         [SerializeField] private Transform deerRoot;
@@ -99,6 +105,11 @@ namespace Group07.Chains
             ResetBedding();
             ResetVisuals();
 
+            if (dustEffect != null)
+            {
+                dustEffect.SetActive(true);
+            }
+
             if (state != null)
             {
                 state.ResetToStart();
@@ -137,6 +148,16 @@ namespace Group07.Chains
                 }
 
                 ApplyStageVisual(newStage, false);
+
+                if (dustEffect != null)
+                {
+                    dustEffect.SetActive(false);
+                }
+
+                if (newStage >= 2)
+                {
+                    SpawnStageEffect();
+                }
             }
 
             CleanBedding(hit.side, hit.index);
@@ -153,6 +174,8 @@ namespace Group07.Chains
         public override void OnRoundComplete(StoryRoundResult result)
         {
             HideMissHint();
+            PlayClip(completeClip);
+            SpawnStageEffect();
 
             if (state != null)
             {
@@ -160,6 +183,11 @@ namespace Group07.Chains
             }
 
             ApplyStageVisual(3, false);
+
+            if (dustEffect != null)
+            {
+                dustEffect.SetActive(false);
+            }
 
             if (deerHead != null)
             {
@@ -173,6 +201,11 @@ namespace Group07.Chains
             HideMissHint();
             ResetBedding();
             ResetVisuals();
+
+            if (dustEffect != null)
+            {
+                dustEffect.SetActive(true);
+            }
 
             if (state != null)
             {
@@ -219,6 +252,22 @@ namespace Group07.Chains
             GameObject fx = Instantiate(hitEffect, pos, Quaternion.identity);
             fx.transform.localScale = Vector3.one * hitEffectScale;
             Destroy(fx, 2f);
+        }
+
+        /// <summary>阶段恢复 / 完成时在小鹿处播放一次暖色粒子。</summary>
+        private void SpawnStageEffect()
+        {
+            if (stageEffect == null)
+            {
+                return;
+            }
+
+            Transform anchor = stageEffectAnchor != null
+                ? stageEffectAnchor
+                : (deerRoot != null ? deerRoot : transform);
+
+            GameObject fx = Instantiate(stageEffect, anchor.position, Quaternion.identity);
+            Destroy(fx, 3f);
         }
 
         private void ApplyStageVisual(int stage, bool instant)
