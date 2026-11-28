@@ -331,6 +331,28 @@ namespace Group07.Chains
             if (beddingRenderers[i] != null)
             {
                 beddingRenderers[i].sharedMaterial = cleanMaterial;
+                SetBeddingDetail(beddingRenderers[i], true);
+            }
+        }
+
+        // 清洁态显示草秆网格细节、隐藏脏污贴花；脏污态反之
+        private static void SetBeddingDetail(Renderer bedding, bool clean)
+        {
+            if (bedding == null)
+            {
+                return;
+            }
+
+            Transform dirt = bedding.transform.Find("DirtDecal");
+            if (dirt != null)
+            {
+                dirt.gameObject.SetActive(!clean);
+            }
+
+            Transform straw = bedding.transform.Find("StrawDetail");
+            if (straw != null)
+            {
+                straw.gameObject.SetActive(clean);
             }
         }
 
@@ -346,6 +368,7 @@ namespace Group07.Chains
                 if (beddingRenderers[i] != null)
                 {
                     beddingRenderers[i].sharedMaterial = dirtyMaterial;
+                    SetBeddingDetail(beddingRenderers[i], false);
                 }
             }
         }
